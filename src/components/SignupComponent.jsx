@@ -2,13 +2,11 @@ import React, { useState } from 'react'
 import authService from '../appwrite/auth'
 import { Link, useNavigate } from 'react-router-dom'
 import { login } from '../store/authSlice'
-import Button from './Button'
-import Input from './Input'
-import Logo from './Logo'
+import {Button, Input, Logo} from './index'
 import { useDispatch } from 'react-redux'
 import { useForm } from 'react-hook-form'
 
-const Signup = () => {
+const SignupComponent = () => {
     const navigate = useNavigate()
     const dispatch = useDispatch()
     const [error, setError] = useState("")
@@ -16,11 +14,12 @@ const Signup = () => {
     
     
     const create = async(data)=>{
-        setError(error)
+        setError("")
+        // console.log("singupcomponent")
         try {
-            const userData = authService.createAccount(data)
+            const userData =await authService.createAccount(data)
             if(userData){
-              const userData = authService.getCurrentUser()
+              const userData = await authService.getCurrentUser()
               if(userData){
                 dispatch(login(userData))
               }
@@ -28,7 +27,7 @@ const Signup = () => {
             }
             
         } catch (error) {
-            setError(error)
+            setError(error.message)
         }
     }
     
@@ -53,7 +52,8 @@ const Signup = () => {
             </p>
             {error && <p className="text-red-600 mt-8 text-center">{error}</p>}
             
-            <form onClick={handleSubmit(create)}>
+            {/* <form> */}
+            <form onSubmit={handleSubmit(create)}>
               <div className='space-y-5'>
                 <Input
                   label="Full name: "
@@ -85,7 +85,7 @@ const Signup = () => {
                   
                 />
                 
-                <Button type='submit'>
+                <Button className='w-full' type='submit'>
                   Create Account
                 </Button>
                 
@@ -98,4 +98,4 @@ const Signup = () => {
   )
 }
 
-export default Signup
+export default SignupComponent

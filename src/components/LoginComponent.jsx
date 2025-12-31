@@ -7,9 +7,9 @@ import { useDispatch } from 'react-redux'
 // import { login } from '../store/authSlice'
 import authService from '../appwrite/auth'
 import { useForm } from 'react-hook-form'
-import { useNavigate } from 'react-router-dom'
+import {Link, useNavigate } from 'react-router-dom'
 
-const Login = () => {
+const LoginComponent = () => {
     const navigate = useNavigate()
     const dispatch = useDispatch()
     const {register, handleSubmit} = useForm()
@@ -88,4 +88,4 @@ const Login = () => {
   )
 }
 
-export default Login
+export default LoginComponent;

@@ -7,31 +7,33 @@ export default function Protected({chindren, authentication
 }) {
     
     const navigate = useNavigate()
-    const [loader, setLoader] = useState(true)
+    // const [loader, setLoader] = useState(true)
+    const [load, setLoad] = useState(true)
     const authStatus = useSelector(state=>state.auth.status)
     
     
     useEffect(()=>{
         
         //TODO: make it more easy to understant
-        // if(authStatus===true){
-        //     navigate('/')
-        // }
-        // else if(authStatus===false){
-        //     navigate('/login')
-        // }
-        
-        if(authentication && authStatus!==authentication){
-            navigate('/login')
-        }
-        else if(!authentication && authStatus!==authentication){
+        if(authStatus===true){
             navigate('/')
         }
-        setLoader(false)
+        else if(authStatus===false){
+            navigate('/login')
+        }
+        setLoad(false)
         
-    },[authStatus,navigate,authentication])
+        // if(authentication && authStatus!==authentication){
+        //     navigate('/login')
+        // }
+        // else if(!authentication && authStatus!==authentication){
+        //     navigate('/')
+        // }
+        // setLoad(false)
+        
+    },[authStatus, navigate, authentication])
         
     
     
-  return loader?<h1>Loading...</h1>:<>{chindren}</>
+  return load?<h1>Loading...</h1>:<>{chindren}</>
 }

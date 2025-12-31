@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import service from '../appwrite/config'
-import Container from '../components/container/Container'
-import PostCard from '../components/PostCard'
+import { Container, PostCard } from '../components'
 
 const Home = () => {
     
@@ -10,13 +9,13 @@ const Home = () => {
     useEffect(()=>{
         service.getPosts().then((post)=>{
             if(post){
-                setPosts(post.documents)
+                setPosts(post)
             }
         })
     },[])
     
     
-   if (posts.length === 0) {
+   if (!posts) {
         return (
             <div className="w-full py-8 mt-4 text-center">
                 <Container>
@@ -38,7 +37,7 @@ const Home = () => {
                 <div className='flex flex-wrap'>
                     {posts.map((post)=>(
                         <div key={post.$id} className='p-2 w-1/4'>
-                            <PostCard {...post}/>
+                            <PostCard $id={post.$id} title={post.title} featuredImage={post.featuredImage}/>
                             
                         </div>
                     ))}

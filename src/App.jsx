@@ -4,29 +4,48 @@ import './App.css'
 import { useDispatch } from 'react-redux'
 import authService from './appwrite/auth'
 import { login, logout } from './store/authSlice'
-import {Header, Footer} from './components/index'
+// import {Header, Footer} from './components/index'
+import { Header, Footer, SignupComponent } from './components'
 import { Outlet } from 'react-router-dom'
+// import { useSelector } from 'react-redux'
+import Signup from './pages/Signup'
 
 function App() {
   
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
   const dispatch = useDispatch()
+  // const status = useSelector((state)=>state.auth.status)
   
   useEffect(()=>{
+    // if(status){
+      
+    
     authService.getCurrentUser()
     .then((userData)=>{
       if(userData){
         dispatch(login({userData}))
         // setLoading(false)
+        console.log("console bol rha hu +",userData)
       }
       else{
         dispatch(logout())
+        console.log("console bol rha hu false wala hu",userData)
       }
     })
     .finally(()=> setLoading(false))
+    }
+    
+    // const userData = await authService.getCurrentUser();
+    // console.log(userData)
+    // if(userData){
+    //   dispatch(login({userData}))
+    // }
+    // else{
+    //   dispatch(logout());
+    // }
     
     // console.log(loading)
-  },[])
+  ,[])
   
 
   return !loading?(
@@ -34,15 +53,15 @@ function App() {
         <div className='w-full block'>
           <Header/>
           <main>
-            TODO:{/* <Outlet/> */}
+            TODO:<Outlet/>
           </main>
           <Footer/>
+          {/* <Signup/> */}
+          {/* <SignupComponent/> */}
           
         </div>      
     </div>
-  ):(
-    <div><h1>Page not found</h1></div>
-  )
+  ):null
   
   // return (
   //   <div>

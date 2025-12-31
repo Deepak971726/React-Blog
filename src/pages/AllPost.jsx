@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import service from '../appwrite/config'
-import PostCard from '../components/PostCard'
-import Container from '../components/container/Container'
-
+import { Container, PostCard } from '../components'
 
 const AllPost = () => {
     const [post, setPost] = useState([])
@@ -10,10 +8,16 @@ const AllPost = () => {
     useEffect(()=>{
         service.getPosts([])
         .then((posts)=>  {
+            console.log("service wala post", posts)
             if(posts){
-                setPost(posts.documents)
+                setPost(posts)
+                console.log("me hu post",(post))
             }
+            
+            console.log(post)   
         })
+        
+         
          
         
     },[])
@@ -22,9 +26,9 @@ const AllPost = () => {
     <div className='w-full py-8'>
         <Container>
             <div className="flex flex-wrap">
-                {post.map((post)=>(
-                    <div key={post.$id} className='p-2 w-1/4' >
-                        <PostCard post={post}/>
+                {post.map((posts)=>(
+                    <div key={posts.$id} className='p-2 w-1/4' >
+                        <PostCard $id={posts.$id} title={posts.title} featuredImage={post.featuredImage}/>
                     </div>
                 ))}
             </div>

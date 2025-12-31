@@ -1,12 +1,14 @@
 import React, { useCallback, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
-import Btn from '../Button'
+// import Btn from '../Button'
 import Input from '../Input'
 import Select from '../Select'
 import RTE from '../RTE'
 import service from '../../appwrite/config'
-import { Navigate, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
+import Button from '../Button'
+// import Button from '../index'
  
 
 
@@ -15,7 +17,7 @@ const PostForm = ({post}) => {
     const {register, handleSubmit, watch, setValue, control, getValues}= useForm({
         defaultValues:{
             title: post?.title || '',
-            slug: post?.slug || '',
+            slug: post?.$id|| '',
             content:post?.content || '',
             status:post?.status || 'active',
             
@@ -23,11 +25,15 @@ const PostForm = ({post}) => {
     })
     
     const navigate = useNavigate()
-    const userDate = useSelector((state)=>state.auth.userDate)
+    const userData = useSelector((state)=>(state.auth.userData))
     
     const submit = async(data)=>{
+        console.log("starting",userData)
+        console.log("dataform",data)
         if(post){
-            const file = data.image[0]? service.uploadFile(data.image)[0] :null
+            
+            // console.log('edit wala chal rha hai')
+            const file = data.image[0]? service.uploadFile(data.image[0]) :null
             
             if(file){
                 service.deleteFile(post.featuredImage)
@@ -37,20 +43,26 @@ const PostForm = ({post}) => {
                 featuredImage:file?file.$id: undefined
             })
             if(dbPost){
-                navigate(`/dbPost/${dbPost.$id}`)
+                navigate(`/post/${dbPost.$id}`)
             }
         }
         else{
             
             // TODO:: FILE HAI TOH UPLOAD KARO
             const file = await service.uploadFile(data.image[0])
+            // console.log("add post wala hal rha hai",file)
+            // console.log("data",data)
+            console.log("userdata", userData)
             
             if(file){
                 const fileId = file.$id
                 data.featuredImage = fileId
+                console.log(data)
                 const dbPost = await service.createPost({
+                    // conf.appwriteDatabaseId
                     ...data,
-                    userId:userDate.$id
+                    userId:userData.$id
+                    // console.log("userdata",userData)
                 })
                 if(dbPost){
                     navigate(`/post/${dbPost.$id}`)
@@ -61,7 +73,7 @@ const PostForm = ({post}) => {
     }
     
     const slugTransform = useCallback((value)=>{
-        if(value && typeof value=== 'string'){
+        if(value && typeof value === 'string'){
             return value.trim().toLowerCase().replace(/[^a-zA-Z\d\s]+/g, "-").replace(/\s/g, "-");
         }
         else{
@@ -126,9 +138,9 @@ const PostForm = ({post}) => {
                     className="mb-4"
                     {...register("status", { required: true })}
                 />
-                <Btn type="submit" bgColor={post ? "bg-green-500" : undefined} className="w-full">
+                <Button type="submit" bgColor={post ? "bg-green-500" : undefined} className="w-full">
                     {post ? "Update" : "Submit"}
-                </Btn>
+                </Button>
             </div>
         </form>
   )
